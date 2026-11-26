@@ -1,0 +1,25 @@
+{
+  "name": "@motoclick/chatwoot-sdk",
+  "version": "0.1.0",
+  "description": "Botón de soporte que manda los reportes directo a Chatwoot. Sin backend: solo la URL de Chatwoot y el identificador del inbox.",
+  "main": "./web/dist/index.cjs",
+  "module": "./web/dist/index.js",
+  "types": "./web/dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./web/dist/index.d.ts",
+      "import": "./web/dist/index.js",
+      "require": "./web/dist/index.cjs"
+    },
+    "./script": "./web/dist/motoclick-support.js"
+  },
+  "files": ["web/dist"],
+  "sideEffects": false,
+  "keywords": ["chatwoot", "support", "soporte", "widget", "motoclick"],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/motoclick/motoclick-chatwoot-sdk.git"
+  },
+  "license": "UNLICENSED",
+  "private": true
+}

@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Prueba · MotoClick Support SDK</title>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 640px; margin: 40px auto; padding: 0 16px; color: #1f2430; }
+    fieldset { border: 1px solid #dde1e7; border-radius: 12px; padding: 16px; margin-bottom: 16px; }
+    label { display: block; font-size: 13px; font-weight: 600; margin: 10px 0 4px; }
+    input { width: 100%; padding: 9px 11px; border: 1px solid #ccd1d9; border-radius: 8px; font: inherit; box-sizing: border-box; }
+    button { padding: 10px 16px; border-radius: 8px; border: 0; background: #ff5a1f; color: #fff; font-weight: 600; cursor: pointer; margin: 12px 8px 0 0; }
+    button.sec { background: #eef0f3; color: #1f2430; }
+    pre { background: #f5f6f8; padding: 12px; border-radius: 8px; font-size: 12px; white-space: pre-wrap; }
+  </style>
+</head>
+<body>
+  <h1>MotoClick Support SDK</h1>
+  <p>Página de prueba. Llena los datos, pulsa <b>Iniciar</b> y usa el botón naranja de abajo a la derecha.</p>
+
+  <fieldset>
+    <legend>Configuración (lo que pondría cada proyecto)</legend>
+    <label>URL de Chatwoot</label>
+    <input id="url" value="https://chatwoot.motoclickapp.com" />
+    <label>Identificador del inbox API</label>
+    <input id="inbox" value="qqaafBw54s4jqXnySGkjEgTh" />
+    <label>App</label>
+    <input id="app" value="pagina-prueba" />
+  </fieldset>
+
+  <fieldset>
+    <legend>Usuario (identify)</legend>
+    <label>Id</label><input id="uid" />
+    <label>Nombre</label><input id="uname" placeholder="Tu nombre" />
+    <label>Correo</label><input id="uemail" placeholder="opcional" />
+    <label>Orden en pantalla (setContext)</label><input id="orden" placeholder="opcional" />
+  </fieldset>
+
+  <button id="start">Iniciar</button>
+  <button id="reset" class="sec">Cerrar sesión (reset)</button>
+
+  <h3>Eventos</h3>
+  <pre id="log">—</pre>
+
+  <script src="../dist/motoclick-support.js"></script>
+  <script>
+    const $ = (id) => document.getElementById(id);
+    const fields = ['url', 'inbox', 'app', 'uid', 'uname', 'uemail', 'orden'];
+    fields.forEach((f) => { const v = localStorage.getItem('demo:' + f); if (v) $(f).value = v; });
+    // Cada visitante tiene su propio usuario de prueba, así nadie ve los reportes de otro.
+    if (!$('uid').value) $('uid').value = 'demo_' + Math.random().toString(36).slice(2, 8);
+    if (!$('uname').value) $('uname').value = 'Demo ' + $('uid').value.slice(5);
+    const log = (...a) => { $('log').textContent = new Date().toLocaleTimeString() + '  ' + a.map((x) => typeof x === 'string' ? x : JSON.stringify(x)).join(' ') + '\n' + ($('log').textContent === '—' ? '' : $('log').textContent); };
+
+    $('start').onclick = () => {
+      fields.forEach((f) => localStorage.setItem('demo:' + f, $(f).value));
+      MotoclickSupport.init({ chatwootUrl: $('url').value, inboxId: $('inbox').value.trim(), app: $('app').value, appVersion: '0.1.0' });
+      MotoclickSupport.identify({ id: $('uid').value, name: $('uname').value, email: $('uemail').value || undefined });
+      if ($('orden').value) MotoclickSupport.setContext({ orden: $('orden').value });
+      ['reported', 'reply', 'message', 'error', 'open', 'close'].forEach((e) => MotoclickSupport.on(e, (p) => log(e, p ?? '')));
+      log('init listo');
+    };
+    $('reset').onclick = () => { MotoclickSupport.reset(); log('reset'); };
+
+    // ?abrir=1 inicia y abre el panel directo (útil para mostrarlo).
+    const q = new URLSearchParams(location.search);
+    if (q.get('abrir')) { $('start').click(); MotoclickSupport.open(q.get('abrir') === 'lista' ? 'list' : 'new'); }
+  </script>
+</body>
+</html>

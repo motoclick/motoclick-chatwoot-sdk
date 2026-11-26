@@ -1,0 +1,33 @@
+{
+  "name": "@motoclick/chatwoot-sdk-dev",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Botón de soporte que manda los reportes directo a Chatwoot. Sin backend: solo URL de Chatwoot + identificador del inbox.",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "unpkg": "./dist/motoclick-support.js",
+  "jsdelivr": "./dist/motoclick-support.js",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./script": "./dist/motoclick-support.js"
+  },
+  "files": ["dist"],
+  "sideEffects": false,
+  "scripts": {
+    "build": "node build.mjs && tsc -p tsconfig.json --emitDeclarationOnly",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "dev": "node build.mjs --watch"
+  },
+  "keywords": ["chatwoot", "support", "soporte", "widget", "motoclick"],
+  "license": "UNLICENSED",
+  "devDependencies": {
+    "esbuild": "^0.24.0",
+    "typescript": "^5.6.0"
+  }
+}
